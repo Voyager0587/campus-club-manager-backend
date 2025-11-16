@@ -1,5 +1,54 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
 spring:
   application:
     name: campus-club-manager-backend
-server:
-  port: 8080
+  profiles:
+    active: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/campus_club?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+  jackson:
+    time-zone: Asia/Shanghai
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: is_deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+sa-token:
+  token-name: Authorization
+  token-prefix: Bearer
+  is-print: false
+  is-read-cookie: false
+  timeout: 2592000
+  activity-timeout: -1
+  is-concurrent: true
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /doc.html
+    tags-sorter: alpha
+
+aliyun:
+  oss:
+    endpoint: ${ALIYUN_OSS_ENDPOINT:}
+    bucket-name: ${ALIYUN_OSS_BUCKET:}
+    access-key-id: ${ALIYUN_OSS_ACCESS_KEY_ID:}
+    access-key-secret: ${ALIYUN_OSS_ACCESS_KEY_SECRET:}
