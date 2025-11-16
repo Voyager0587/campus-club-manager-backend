@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: campus-club-manager-backend
+server:
+  port: 8080
