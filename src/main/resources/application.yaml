@@ -32,7 +32,7 @@ mybatis-plus:
 
 sa-token:
   token-name: Authorization
-  token-prefix: Bearer
+#  token-prefix: Bearer
   is-print: false
   is-read-cookie: false
   timeout: 2592000
