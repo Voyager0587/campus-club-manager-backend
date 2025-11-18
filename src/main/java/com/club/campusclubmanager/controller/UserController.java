@@ -9,6 +9,7 @@ import com.club.campusclubmanager.service.UserService;
 import com.club.campusclubmanager.vo.LoginResponse;
 import com.club.campusclubmanager.vo.UserInfoVO;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -61,7 +62,7 @@ public class UserController {
      */
     @Operation(summary = "更新用户信息", description = "需要登录，更新当前用户的个人资料")
     @SaCheckRole("user")
-    @PostMapping("/update")
+    @PostMapping(value ="/update")
     public Result<Void> updateUserInfo(@Valid @RequestBody UpdateUserRequest request) {
         userService.updateUserInfo(request);
         return Result.success("更新成功", null);
