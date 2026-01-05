@@ -1,6 +1,9 @@
 package com.club.campusclubmanager.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaCheckRole;
+
+import cn.dev33.satoken.annotation.SaMode;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.club.campusclubmanager.common.Result;
 import com.club.campusclubmanager.dto.ReviewApplicationRequest;
@@ -24,7 +27,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/club/management")
 @RequiredArgsConstructor
-@SaCheckLogin
+@SaCheckRole(
+        value = {"club_admin", "system_admin"},
+        mode = SaMode.OR
+)
+
+
 public class ClubManagementController {
 
     private final ClubService clubService;

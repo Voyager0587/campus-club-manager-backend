@@ -2,6 +2,7 @@ package com.club.campusclubmanager.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaMode;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.club.campusclubmanager.common.Result;
 import com.club.campusclubmanager.dto.MarkReadRequest;
@@ -157,7 +158,10 @@ public class NotificationController {
      * 俱乐部发布通知
      */
     @Operation(summary = "发布通知", description = "仅系统管理员可访问，发布通知给指定用户或所有用户")
-    @SaCheckRole("club_admin")
+    @SaCheckRole(
+            value = {"club_admin", "system_admin"},
+            mode = SaMode.OR
+    )
     @PostMapping("/clubpublish")
     public Result<Void> publishNotification2(@Valid @RequestBody PublishNotificationRequest request) {
         try {
