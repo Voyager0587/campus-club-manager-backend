@@ -3,12 +3,14 @@ package com.club.campusclubmanager.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.club.campusclubmanager.entity.ClubMember;
 import com.club.campusclubmanager.entity.Notification;
 import com.club.campusclubmanager.entity.UserNotificationSetting;
 import com.club.campusclubmanager.enums.NotificationChannel;
 import com.club.campusclubmanager.enums.NotificationPriority;
 import com.club.campusclubmanager.enums.NotificationType;
 import com.club.campusclubmanager.exception.BusinessException;
+import com.club.campusclubmanager.mapper.ClubMemberMapper;
 import com.club.campusclubmanager.mapper.NotificationMapper;
 import com.club.campusclubmanager.mapper.UserNotificationSettingMapper;
 import com.club.campusclubmanager.notification.channel.NotificationChannelStrategy;
@@ -39,6 +41,7 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
 
     private final NotificationMapper notificationMapper;
     private final UserNotificationSettingMapper settingMapper;
+    private final ClubMemberMapper clubMemberMapper;
     private final List<NotificationChannelStrategy> channelStrategies;
 
     // 渠道策略映射
@@ -336,6 +339,37 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
         BeanUtils.copyProperties(notification, vo);
         vo.setRead(notification.getReadFlag() == 1);
         return vo;
+    }
+
+    @Override
+    @Async("notificationExecutor")
+    public void sendToClubMembers(Long clubId, String title, String content,
+                                 NotificationType type, String relatedType, Long relatedId,
+                                 NotificationPriority priority) {
+        try {
+            // 查询社团所有成员的用户ID
+            LambdaQueryWrapper<ClubMember> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(ClubMember::getClubId, clubId);
+            List<ClubMember> members = clubMemberMapper.selectList(wrapper);
+
+            if (members.isEmpty()) {
+                log.warn("社团没有成员，无法发送通知: clubId={}", clubId);
+                return;
+            }
+
+            // 提取所有成员的用户ID
+            List<Long> userIds = members.stream()
+                    .map(ClubMember::getUserId)
+                    .collect(Collectors.toList());
+
+            // 使用批量发送通知的方法
+            sendBatchNotification(userIds, title, content, type, relatedType, relatedId, priority);
+
+            log.info("成功向社团所有成员发送通知: clubId={}, memberCount={}, title={}",
+                     clubId, userIds.size(), title);
+        } catch (Exception e) {
+            log.error("向社团成员发送通知失败: clubId={}, title={}", clubId, title, e);
+        }
     }
 }
 

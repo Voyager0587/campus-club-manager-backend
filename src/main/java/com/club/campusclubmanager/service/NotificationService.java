@@ -101,6 +101,21 @@ public interface NotificationService {
      * @param setting 设置信息
      */
     void updateNotificationSetting(Long userId, NotificationSettingVO setting);
+
+    /**
+     * 发送通知给社团所有成员
+     *
+     * @param clubId 社团ID
+     * @param title 标题
+     * @param content 内容
+     * @param type 通知类型
+     * @param relatedType 关联类型
+     * @param relatedId 关联ID
+     * @param priority 优先级
+     */
+    void sendToClubMembers(Long clubId, String title, String content,
+                          NotificationType type, String relatedType, Long relatedId,
+                          NotificationPriority priority);
 }
 
 

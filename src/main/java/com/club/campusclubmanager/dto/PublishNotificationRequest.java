@@ -44,6 +44,11 @@ public class PublishNotificationRequest {
     private List<Long> userIds;
 
     /**
+     * 社团ID（向社团所有成员发送时使用）
+     */
+    private Long clubId;
+
+    /**
      * 关联类型（可选，如activity, club等）
      */
     private String relatedType;

@@ -157,7 +157,7 @@ public class NotificationController {
     /**
      * 俱乐部发布通知
      */
-    @Operation(summary = "发布通知", description = "仅系统管理员可访问，发布通知给指定用户或所有用户")
+    @Operation(summary = "发布通知", description = "仅社团管理员和系统管理员可访问，发布通知给指定用户或社团所有成员")
     @SaCheckRole(
             value = {"club_admin", "system_admin"},
             mode = SaMode.OR
@@ -167,7 +167,7 @@ public class NotificationController {
         try {
             NotificationType type = NotificationType.fromCode(request.getType());
             NotificationPriority priority = NotificationPriority.valueOf(request.getPriority());
-            
+
             if (request.getUserIds() != null && !request.getUserIds().isEmpty()) {
                 // 批量发送通知给指定用户
                 notificationService.sendBatchNotification(
@@ -179,12 +179,21 @@ public class NotificationController {
                         request.getRelatedId(),
                         priority
                 );
+            } else if (request.getClubId() != null) {
+                // 发送给社团所有成员
+                notificationService.sendToClubMembers(
+                        request.getClubId(),
+                        request.getTitle(),
+                        request.getContent(),
+                        type,
+                        request.getRelatedType(),
+                        request.getRelatedId(),
+                        priority
+                );
             } else {
-                // 如果未指定用户ID，应该提供发送给所有用户的功能
-                // 这里暂时返回错误，因为NotificationService中没有提供发送给所有用户的方法
-                return Result.fail("请指定接收通知的用户ID列表");
+                return Result.fail("请指定接收通知的用户ID列表或社团ID");
             }
-            
+
             return Result.success("通知发布成功", null);
         } catch (IllegalArgumentException e) {
             return Result.fail(e.getMessage());
