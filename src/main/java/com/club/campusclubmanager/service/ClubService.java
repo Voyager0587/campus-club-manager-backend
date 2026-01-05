@@ -108,4 +108,9 @@ public interface ClubService extends IService<Club> {
      * 修改社团成员角色（管理员）
      */
     void updateMemberRole(Long clubId, Long userId, String role);
+
+    /**
+     * 查询当前用户作为负责人管理的社团列表
+     */
+    List<ClubVO> getManagedClubs();
 }

@@ -1,5 +1,6 @@
 package com.club.campusclubmanager.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.club.campusclubmanager.common.Result;
@@ -26,6 +27,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/club")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class ClubController {
 
     private final ClubService clubService;
@@ -66,7 +68,6 @@ public class ClubController {
      * 查询用户加入的社团列表
      */
     @Operation(summary = "查询我加入的社团", description = "需要登录，查看当前用户已加入的社团列表")
-    @SaCheckRole("user")
     @GetMapping("/my")
     public Result<List<ClubVO>> getMyClubs() {
         List<ClubVO> clubs = clubService.getMyClubs();
@@ -77,7 +78,6 @@ public class ClubController {
      * 申请加入社团
      */
     @Operation(summary = "申请加入社团", description = "需要登录，提交加入社团的申请")
-    @SaCheckRole("user")
     @PostMapping("/apply")
     public Result<Void> applyJoinClub(@Valid @RequestBody ApplyJoinClubRequest request) {
         clubService.applyJoinClub(request);
@@ -102,7 +102,6 @@ public class ClubController {
      * 查询用户的申请记录
      */
     @Operation(summary = "查询我的申请记录", description = "需要登录，查看当前用户的所有社团申请记录")
-    @SaCheckRole("user")
     @GetMapping("/my/applications")
     public Result<List<ClubApplicationVO>> getMyApplications() {
         List<ClubApplicationVO> applications = clubService.getMyApplications();

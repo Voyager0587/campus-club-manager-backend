@@ -7,12 +7,15 @@ import com.club.campusclubmanager.dto.ReviewApplicationRequest;
 import com.club.campusclubmanager.dto.UpdateClubRequest;
 import com.club.campusclubmanager.service.ClubService;
 import com.club.campusclubmanager.vo.ClubApplicationVO;
+import com.club.campusclubmanager.vo.ClubVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 社团管理控制器（社团负责人）
@@ -25,6 +28,16 @@ import org.springframework.web.bind.annotation.*;
 public class ClubManagementController {
 
     private final ClubService clubService;
+
+    /**
+     * 获取当前用户管理的社团列表
+     */
+    @Operation(summary = "获取管理社团列表", description = "获取当前用户作为负责人管理的所有社团")
+    @GetMapping("/clubs")
+    public Result<List<ClubVO>> getManagedClubs() {
+        List<ClubVO> clubs = clubService.getManagedClubs();
+        return Result.success(clubs);
+    }
 
     /**
      * 查询指定社团的待审核申请列表

@@ -773,4 +773,37 @@ public class ClubServiceImpl extends ServiceImpl<ClubMapper, Club> implements Cl
         member.setRole(MemberRole.fromCode(role));
         clubMemberMapper.updateById(member);
     }
+
+    /**
+     * 查询当前用户作为负责人管理的社团列表
+     */
+    @Override
+    public List<ClubVO> getManagedClubs() {
+        Long userId = StpUtil.getLoginIdAsLong();
+
+        // 查询用户作为负责人的社团ID列表
+        LambdaQueryWrapper<ClubMember> memberWrapper = new LambdaQueryWrapper<>();
+        memberWrapper.eq(ClubMember::getUserId, userId)
+                .eq(ClubMember::getRole, MemberRole.LEADER);
+        List<ClubMember> members = clubMemberMapper.selectList(memberWrapper);
+
+        if (members.isEmpty()) {
+            return List.of();
+        }
+
+        // 查询社团信息
+        List<Long> clubIds = members.stream()
+                .map(ClubMember::getClubId)
+                .collect(Collectors.toList());
+
+        LambdaQueryWrapper<Club> clubWrapper = new LambdaQueryWrapper<>();
+        clubWrapper.in(Club::getId, clubIds);
+        clubWrapper.orderByDesc(Club::getCreateTime);
+        List<Club> clubs = this.list(clubWrapper);
+
+        // 转换为VO
+        return clubs.stream()
+                .map(this::convertToClubVO)
+                .collect(Collectors.toList());
+    }
 }

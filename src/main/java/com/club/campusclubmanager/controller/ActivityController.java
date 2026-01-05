@@ -1,5 +1,6 @@
 package com.club.campusclubmanager.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.club.campusclubmanager.common.Result;
@@ -22,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/activity")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class ActivityController {
 
     private final ActivityService activityService;
@@ -57,7 +59,6 @@ public class ActivityController {
      * 报名活动
      */
     @Operation(summary = "报名活动", description = "需要登录，用户报名参加活动")
-    @SaCheckRole("user")
     @PostMapping("/{id}/signup")
     public Result<Void> signupActivity(
             @Parameter(description = "活动ID") @PathVariable Long id
@@ -70,7 +71,6 @@ public class ActivityController {
      * 取消报名
      */
     @Operation(summary = "取消报名", description = "需要登录，用户取消活动报名")
-    @SaCheckRole("user")
     @DeleteMapping("/{id}/signup")
     public Result<Void> cancelSignup(
             @Parameter(description = "活动ID") @PathVariable Long id
@@ -83,7 +83,6 @@ public class ActivityController {
      * 查看我的报名记录
      */
     @Operation(summary = "查看我的报名记录", description = "需要登录，查看当前用户的所有活动报名记录")
-    @SaCheckRole("user")
     @GetMapping("/my-signups")
     public Result<List<ActivitySignupVO>> getMySignups() {
         List<ActivitySignupVO> signups = activityService.getMySignups();

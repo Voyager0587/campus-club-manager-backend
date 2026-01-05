@@ -1,5 +1,6 @@
 package com.club.campusclubmanager.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import com.club.campusclubmanager.common.Result;
 import com.club.campusclubmanager.dto.LoginRequest;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class UserController {
 
     private final UserService userService;
@@ -49,7 +51,6 @@ public class UserController {
      * 获取当前用户信息
      */
     @Operation(summary = "获取当前用户信息", description = "需要登录，获取当前登录用户的详细信息")
-    @SaCheckRole("user")
     @GetMapping("/info")
     public Result<UserInfoVO> getCurrentUserInfo() {
         UserInfoVO userInfo = userService.getCurrentUserInfo();
@@ -60,7 +61,6 @@ public class UserController {
      * 更新用户信息
      */
     @Operation(summary = "更新用户信息", description = "需要登录，更新当前用户的个人资料")
-    @SaCheckRole("user")
     @PostMapping(value ="/update")
     public Result<Void> updateUserInfo(@Valid @RequestBody UpdateUserRequest request) {
         userService.updateUserInfo(request);

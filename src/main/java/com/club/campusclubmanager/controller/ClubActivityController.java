@@ -1,5 +1,6 @@
 package com.club.campusclubmanager.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.club.campusclubmanager.common.Result;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/club-admin/activity")
 @RequiredArgsConstructor
-@SaCheckRole("user")  // 至少需要user角色，具体权限��Service层验证
+@SaCheckLogin  // 至少需要user角色，具体权限��Service层验证
 public class ClubActivityController {
 
     private final ActivityService activityService;
